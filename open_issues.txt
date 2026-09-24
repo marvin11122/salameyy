@@ -1,0 +1,3 @@
+1. Compatibility is intentionally preserved with Crush internals and existing `.crush` storage. The visible fork branding is SALAMEY, but the deep persistence/config rename is not finished yet.
+2. `.salamey/commands` is wired in, but the full SALAMEY docs viewer from the prototype is not integrated into the Crush TUI yet.
+3. Custom commands now support YAML frontmatter metadata, but they still resolve to single prompt payloads rather than multi-step headless pipelines.

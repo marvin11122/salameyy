@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 84" role="img" aria-labelledby="title desc">
+  <title id="title">SALAMEY Usage Report</title>
+  <desc id="desc">SALAMEY wordmark for the stats page.</desc>
+  <defs>
+    <linearGradient id="salamey-accent" x1="6" y1="16" x2="104" y2="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00ffb2"/>
+      <stop offset="1" stop-color="#6b50ff"/>
+    </linearGradient>
+    <linearGradient id="salamey-wordmark" x1="118" y1="14" x2="520" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff6daa"/>
+      <stop offset="0.55" stop-color="#c259ff"/>
+      <stop offset="1" stop-color="#00a4ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="14" width="92" height="56" rx="18" fill="url(#salamey-accent)"/>
+  <path
+    d="M18 44h14l8-11 11 18 9-13h14"
+    fill="none"
+    stroke="#201f26"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="6"
+  />
+  <text
+    x="120"
+    y="46"
+    fill="url(#salamey-wordmark)"
+    font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, monospace"
+    font-size="40"
+    font-weight="700"
+    letter-spacing="0.22em"
+  >
+    SALAMEY
+  </text>
+  <text
+    x="122"
+    y="68"
+    fill="#858392"
+    font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, monospace"
+    font-size="14"
+    font-weight="600"
+    letter-spacing="0.26em"
+  >
+    USAGE REPORT
+  </text>
+  <path
+    d="M344 64h616"
+    fill="none"
+    stroke="url(#salamey-wordmark)"
+    stroke-linecap="round"
+    stroke-width="4"
+  />
+</svg>

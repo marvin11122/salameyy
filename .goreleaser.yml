@@ -1,0 +1,195 @@
+version: 2
+
+project_name: salamey
+
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
+snapshot:
+  version_template: "0.0.0-{{ .Timestamp }}"
+
+before:
+  hooks:
+    - go mod tidy
+    - rm -rf completions
+    - mkdir completions
+    - rm -rf manpages
+    - mkdir manpages
+    - sh -c 'go run . completion bash >./completions/salamey.bash'
+    - sh -c 'go run . completion zsh >./completions/salamey.zsh'
+    - sh -c 'go run . completion fish >./completions/salamey.fish'
+    - sh -c 'go run . man | gzip -c >./manpages/salamey.1.gz'
+
+builds:
+  - id: salamey
+    binary: salamey
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+      - openbsd
+      - netbsd
+      - android
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: android
+        goarch: amd64
+      - goos: android
+        goarch: arm
+      - goos: android
+        goarch: "386"
+      - goos: windows
+        goarch: arm
+    ldflags:
+      - -s -w -X github.com/wiesnermarven-hue/salameyy/internal/version.Version={{.Version}}
+    flags:
+      - -trimpath
+
+  - id: crush
+    binary: crush
+    main: ./cmd/compat
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+      - openbsd
+      - netbsd
+      - android
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: android
+        goarch: amd64
+      - goos: android
+        goarch: arm
+      - goos: android
+        goarch: "386"
+      - goos: windows
+        goarch: arm
+    ldflags:
+      - -s -w -X github.com/wiesnermarven-hue/salameyy/internal/version.Version={{.Version}}
+    flags:
+      - -trimpath
+
+archives:
+  - id: salamey
+    ids:
+      - salamey
+      - crush
+    name_template: >-
+      salamey_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- with .Arm}}v{{ . }}{{ end }}
+    wrap_in_directory: true
+    files:
+      - README*
+      - LICENSE*
+      - manpages/*
+      - completions/*
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: "checksums.txt"
+
+nfpms:
+  - id: salamey
+    ids:
+      - salamey
+      - crush
+    homepage: "https://github.com/wiesnermarven-hue/salameyy"
+    license: "FSL-1.1-MIT"
+    description: "SALAMEY is a terminal-based AI coding assistant."
+    maintainer: "SALAMEY Maintainers <salamey@users.noreply.github.com>"
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+      - termux.deb
+    file_name_template: "{{ .ConventionalFileName }}"
+    contents:
+      - src: ./completions/salamey.bash
+        dst: '{{ if eq .Format "termux.deb" }}/data/data/com.termux/files/usr{{ end }}/etc/bash_completion.d/salamey'
+      - src: ./completions/salamey.fish
+        dst: '{{ if eq .Format "termux.deb" }}/data/data/com.termux/files{{ end }}/usr/share/fish/vendor_completions.d/salamey.fish'
+      - src: ./completions/salamey.zsh
+        dst: '{{ if eq .Format "termux.deb" }}/data/data/com.termux/files{{ end }}/usr/share/zsh/site-functions/_salamey'
+      - src: ./manpages/salamey.1.gz
+        dst: '{{ if eq .Format "termux.deb" }}/data/data/com.termux/files{{ end }}/usr/share/man/man1/salamey.1.gz'
+
+source:
+  enabled: true
+
+sboms:
+  - artifacts: archive
+  - id: source
+    artifacts: source
+
+changelog:
+  sort: asc
+  disable: "{{ .IsNightly }}"
+  use: github
+  filters:
+    exclude:
+      - "^(build|ci): "
+      - "^chore: auto-update generated files$"
+      - "^chore: docs$"
+      - "^chore: schema update$"
+      - "^chore: schema$"
+      - "^chore: typo$"
+      - "^chore: update schema$"
+      - "^chore: update$"
+      - "^chore\\(legal\\): "
+      - "^chore\\(deps\\): "
+      - "^docs: update$"
+      - "^test:"
+      - "^v\\d.*"
+      - "merge conflict"
+      - "Merge branch"
+      - "Merge pull request"
+      - "Merge remote-tracking branch"
+      - "go mod tidy"
+      - "^wip "
+      - "^wip:"
+  groups:
+    - title: "Dependencies"
+      regexp: "^.*\\(deps\\)*:+.*$"
+      order: 300
+    - title: "New"
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 100
+    - title: "Fixed"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 200
+    - title: "Documentation"
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 400
+    - title: "Other"
+      order: 9999
+
+release:
+  prerelease: auto
+  footer: "SALAMEY"
